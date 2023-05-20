@@ -1,0 +1,29 @@
+// Название файла: imageUploader.php
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $file = $_FILES['image'];
+
+  $allowedExtensions = ['jpg', 'jpeg', 'png'];
+  $uploadDir = 'uploads/';
+  $maxFileSize = 2 * 1024 * 1024; // 2MB
+
+  $filename = $file['name'];
+  $fileExtension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+  if (!in_array($fileExtension, $allowedExtensions)) {
+    die('Error: Invalid file format. Only JPG, JPEG, and PNG files are allowed.');
+  }
+
+  if ($file['size'] > $maxFileSize) {
+    die('Error: File size exceeds the allowed limit of 2MB.');
+  }
+
+  $newFilename = uniqid() . '.' . $fileExtension;
+  $destination = $uploadDir . $newFilename;
+
+  if (move_uploaded_file($file['tmp_name'], $destination)) {
+    echo 'Success: Image uploaded successfully.';
+  } else {
+    echo 'Error: Failed to upload image.';
+  }
+}
